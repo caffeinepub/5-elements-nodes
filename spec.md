@@ -1,30 +1,26 @@
 # 5 Elements Nodes
 
 ## Current State
-New project. No existing app files.
+The site has a contact form that stores submissions in the backend via `submitContact`. The backend also exposes `getAllSubmissions` which returns all stored contacts. There is no UI to view these submissions.
 
 ## Requested Changes (Diff)
 
 ### Add
-- Full marketing website for 5 Elements Nodes blockchain validation service
-- New modern layout (different from current WordPress site)
-- Same logo from: https://www.5elementsnodes.com/wp-content/uploads/2023/12/LOGO-1.png
-- Sticky navbar with logo and nav links
-- Hero section with headline, subtext, and CTA
-- About section with description and 5-node graphic concept
-- Why Choose Us section with 3 feature cards (Skilled Team, Security, High Performance)
-- Networks/Chains section showing supported blockchains
-- Contact section with email
-- Footer
+- A password-protected `/admin` route that displays all contact form submissions in a table
+- A simple login screen with a password field (hardcoded password: "5elements")
+- Session state: once logged in, stay logged in until page refresh
+- A table showing each submission: name, email, message columns
+- A logout button
 
 ### Modify
-- N/A
+- App.tsx: add React Router or hash-based routing for the `/admin` path, or render admin view conditionally based on URL
 
 ### Remove
-- N/A
+- Nothing
 
 ## Implementation Plan
-1. Generate Motoko backend (minimal, contact form)
-2. Build React frontend with all sections
-3. Use logo image fetched from original URL
-4. Dark tech aesthetic matching brand
+1. Create an AdminPage component with password gate (hardcoded password "5elements")
+2. Fetch all submissions using `getAllSubmissions` from the backend
+3. Display in a clean table with name, email, message columns
+4. Add route: if URL contains `/admin` or `#admin`, show AdminPage instead of main site
+5. Add logout button that clears auth state

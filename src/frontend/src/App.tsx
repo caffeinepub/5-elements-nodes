@@ -17,6 +17,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useSubmitContact } from "./hooks/useQueries";
+import AdminPage from "./pages/AdminPage";
 
 // ─── Node Network SVG Animation ───────────────────────────────────────────────
 function NodeNetwork() {
@@ -128,14 +129,25 @@ function NodeNetwork() {
 
 // ─── Data ──────────────────────────────────────────────────────────────────────
 const networks = [
-  { name: "Internet Computer", ticker: "ICP", color: "0.55 0.18 260" },
-  { name: "Cosmos", ticker: "ATOM", color: "0.55 0.14 292" },
-  { name: "Osmosis", ticker: "OSMO", color: "0.52 0.2 310" },
-  { name: "Persistence", ticker: "XPRT", color: "0.58 0.16 248" },
-  { name: "Juno", ticker: "JUNO", color: "0.5 0.15 270" },
-  { name: "Axelar", ticker: "AXL", color: "0.53 0.13 230" },
-  { name: "Agoric", ticker: "BLD", color: "0.57 0.17 200" },
-  { name: "Stargaze", ticker: "STARS", color: "0.54 0.19 320" },
+  {
+    name: "Internet Computer",
+    ticker: "ICP",
+    color: "0.55 0.18 260",
+    logo: null,
+  },
+  {
+    name: "Aptos",
+    ticker: "APT",
+    color: "0.55 0.14 292",
+    logo: "https://cryptologos.cc/logos/aptos-apt-logo.png?v=040",
+  },
+  { name: "Osmosis", ticker: "OSMO", color: "0.52 0.2 310", logo: null },
+  { name: "Persistence", ticker: "XPRT", color: "0.58 0.16 248", logo: null },
+  { name: "Juno", ticker: "JUNO", color: "0.5 0.15 270", logo: null },
+  { name: "Axelar", ticker: "AXL", color: "0.53 0.13 230", logo: null },
+  { name: "Agoric", ticker: "BLD", color: "0.57 0.17 200", logo: null },
+  { name: "Stargaze", ticker: "STARS", color: "0.54 0.19 320", logo: null },
+  { name: "Polkadot", ticker: "DOT", color: "0.54 0.2 330", logo: null },
 ];
 
 const whyCards = [
@@ -163,7 +175,7 @@ const whyCards = [
 ];
 
 const stats = [
-  { value: "8+", label: "Networks Supported" },
+  { value: "9+", label: "Networks Supported" },
   { value: "99.9%", label: "Uptime SLA" },
   { value: "24/7", label: "Infrastructure Monitoring" },
   { value: "Italy", label: "Based in" },
@@ -171,6 +183,7 @@ const stats = [
 
 // ─── App ───────────────────────────────────────────────────────────────────────
 export default function App() {
+  const [hash, setHash] = useState(() => window.location.hash);
   const [menuOpen, setMenuOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -185,18 +198,25 @@ export default function App() {
   const networksRef = useRef<HTMLElement>(null);
   const contactRef = useRef<HTMLElement>(null);
 
+  useEffect(() => {
+    const onHashChange = () => setHash(window.location.hash);
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
+
+  if (hash === "#admin") {
+    return (
+      <>
+        <Toaster position="top-right" />
+        <AdminPage />
+      </>
+    );
+  }
+
   const scrollTo = (ref: React.RefObject<HTMLElement | null>) => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
     setMenuOpen(false);
   };
-
-  useEffect(() => {
-    const onResize = () => {
-      if (window.innerWidth >= 768) setMenuOpen(false);
-    };
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -536,7 +556,7 @@ export default function App() {
                 data-ocid={`networks.item.${i + 1}`}
               >
                 <div
-                  className="w-12 h-12 rounded-full mx-auto mb-3 flex items-center justify-center text-sm font-bold"
+                  className="w-12 h-12 rounded-full mx-auto mb-3 flex items-center justify-center text-sm font-bold overflow-hidden"
                   style={{
                     background: `oklch(${network.color} / 0.2)`,
                     border: `1px solid oklch(${network.color} / 0.4)`,
@@ -544,7 +564,15 @@ export default function App() {
                     color: `oklch(${network.color})`,
                   }}
                 >
-                  {network.ticker.slice(0, 2)}
+                  {network.logo ? (
+                    <img
+                      src={network.logo}
+                      alt={network.name}
+                      className="w-full h-full object-contain p-1"
+                    />
+                  ) : (
+                    network.ticker.slice(0, 2)
+                  )}
                 </div>
                 <div className="font-heading font-semibold text-sm">
                   {network.name}
