@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { Textarea } from "@/components/ui/textarea";
 import {
   ExternalLink,
+  Github,
   Mail,
   Menu,
   Shield,
@@ -127,27 +128,102 @@ function NodeNetwork() {
   );
 }
 
+// ─── Discord SVG Icon ──────────────────────────────────────────────────────────
+function DiscordIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.03.054a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />
+    </svg>
+  );
+}
+
+// ─── Medium SVG Icon ───────────────────────────────────────────────────────────
+function MediumIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z" />
+    </svg>
+  );
+}
+
 // ─── Data ──────────────────────────────────────────────────────────────────────
 const networks = [
   {
-    name: "Internet Computer",
-    ticker: "ICP",
+    name: "Subsquid",
+    ticker: "SQD",
     color: "0.55 0.18 260",
-    logo: null,
+    logo: "/assets/uploads/icp-logo.png",
+    stakeUrl:
+      "https://network.sqd.dev/worker/12D3KooWFo3RedLAqMVJqbYM2Xnf19Bu4mW7aDQLPLVTaJp5JH6f/general",
   },
   {
     name: "Aptos",
     ticker: "APT",
     color: "0.55 0.14 292",
-    logo: "https://cryptologos.cc/logos/aptos-apt-logo.png?v=040",
+    logo: "/assets/uploads/Aptos-Network-Symbol-White-RGB-1x-1.png",
+    stakeUrl: null,
   },
-  { name: "Osmosis", ticker: "OSMO", color: "0.52 0.2 310", logo: null },
-  { name: "Persistence", ticker: "XPRT", color: "0.58 0.16 248", logo: null },
-  { name: "Juno", ticker: "JUNO", color: "0.5 0.15 270", logo: null },
-  { name: "Axelar", ticker: "AXL", color: "0.53 0.13 230", logo: null },
-  { name: "Agoric", ticker: "BLD", color: "0.57 0.17 200", logo: null },
-  { name: "Stargaze", ticker: "STARS", color: "0.54 0.19 320", logo: null },
-  { name: "Polkadot", ticker: "DOT", color: "0.54 0.2 330", logo: null },
+  {
+    name: "Osmosis",
+    ticker: "OSMO",
+    color: "0.52 0.2 310",
+    logo: null,
+    stakeUrl: null,
+  },
+  {
+    name: "Persistence",
+    ticker: "XPRT",
+    color: "0.58 0.16 248",
+    logo: null,
+    stakeUrl: null,
+  },
+  {
+    name: "Juno",
+    ticker: "JUNO",
+    color: "0.5 0.15 270",
+    logo: null,
+    stakeUrl: null,
+  },
+  {
+    name: "Axelar",
+    ticker: "AXL",
+    color: "0.53 0.13 230",
+    logo: null,
+    stakeUrl: null,
+  },
+  {
+    name: "Agoric",
+    ticker: "BLD",
+    color: "0.57 0.17 200",
+    logo: null,
+    stakeUrl: null,
+  },
+  {
+    name: "Stargaze",
+    ticker: "STARS",
+    color: "0.54 0.19 320",
+    logo: null,
+    stakeUrl: null,
+  },
+  {
+    name: "Polkadot",
+    ticker: "DOT",
+    color: "0.54 0.2 330",
+    logo: null,
+    stakeUrl: null,
+  },
 ];
 
 const whyCards = [
@@ -179,6 +255,29 @@ const stats = [
   { value: "99.9%", label: "Uptime SLA" },
   { value: "24/7", label: "Infrastructure Monitoring" },
   { value: "Italy", label: "Based in" },
+];
+
+const socialLinks = [
+  {
+    label: "GitHub",
+    href: "https://github.com/fiveelementsnodes",
+    Icon: Github,
+  },
+  {
+    label: "Discord",
+    href: "https://discord.gg/2v5rqFbXF5",
+    Icon: DiscordIcon,
+  },
+  {
+    label: "Medium",
+    href: "https://medium.com/@fiveelementsnodes",
+    Icon: MediumIcon,
+  },
+  {
+    label: "Twitter",
+    href: "https://twitter.com/5elementsnodes",
+    Icon: Twitter,
+  },
 ];
 
 // ─── App ───────────────────────────────────────────────────────────────────────
@@ -234,7 +333,6 @@ export default function App() {
     { label: "About", ref: aboutRef },
     { label: "Why Us", ref: whyRef },
     { label: "Networks", ref: networksRef },
-    { label: "Contact", ref: contactRef },
   ];
 
   return (
@@ -253,7 +351,7 @@ export default function App() {
             <img
               src="https://www.5elementsnodes.com/wp-content/uploads/2023/12/LOGO-1.png"
               alt="5 Elements Nodes"
-              className="h-10 w-auto object-contain"
+              className="h-14 w-auto object-contain"
             />
           </button>
 
@@ -552,7 +650,7 @@ export default function App() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.07 }}
-                className="rounded-2xl p-5 bg-card text-center card-glow group cursor-default"
+                className="rounded-2xl p-5 bg-card text-center card-glow group cursor-default flex flex-col"
                 data-ocid={`networks.item.${i + 1}`}
               >
                 <div
@@ -580,6 +678,23 @@ export default function App() {
                 <div className="text-xs text-muted-foreground mt-0.5">
                   {network.ticker}
                 </div>
+                {network.stakeUrl && (
+                  <div className="mt-3">
+                    <a
+                      href={network.stakeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      data-ocid={`networks.item.${i + 1}.primary_button`}
+                    >
+                      <Button
+                        size="sm"
+                        className="w-full bg-primary text-primary-foreground hover:opacity-90 glow-blue font-semibold text-xs tracking-widest"
+                      >
+                        STAKE NOW
+                      </Button>
+                    </a>
+                  </div>
+                )}
               </motion.div>
             ))}
           </div>
@@ -732,7 +847,7 @@ export default function App() {
               <img
                 src="https://www.5elementsnodes.com/wp-content/uploads/2023/12/LOGO-1.png"
                 alt="5 Elements Nodes"
-                className="h-10 w-auto object-contain mb-3"
+                className="h-14 w-auto object-contain mb-3"
               />
               <p className="text-sm text-muted-foreground max-w-xs">
                 Professional PoS blockchain validation services based in Italy.
@@ -760,15 +875,21 @@ export default function App() {
               <h4 className="font-semibold text-sm mb-4 uppercase tracking-widest text-muted-foreground">
                 Social
               </h4>
-              <a
-                href="https://twitter.com/5elementsnodes"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
-                data-ocid="footer.link"
-              >
-                <Twitter size={16} /> @5elementsnodes
-              </a>
+              <div className="flex flex-col gap-3">
+                {socialLinks.map(({ label, href, Icon }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+                    data-ocid="footer.link"
+                  >
+                    <Icon size={16} />
+                    {label}
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
 
