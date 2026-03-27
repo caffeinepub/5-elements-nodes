@@ -226,6 +226,37 @@ const networks = [
   },
 ];
 
+const testedNetworks = [
+  {
+    name: "Aptos",
+    ticker: "APT",
+    color: "0.55 0.14 292",
+    logo: "/assets/uploads/Aptos-Network-Symbol-White-RGB-1x-1.png",
+    stakeUrl: null,
+  },
+  {
+    name: "Celestia",
+    ticker: "TIA",
+    color: "0.55 0.18 250",
+    logo: null,
+    stakeUrl: null,
+  },
+  {
+    name: "Aztec",
+    ticker: "AZTEC",
+    color: "0.52 0.16 280",
+    logo: null,
+    stakeUrl: null,
+  },
+  {
+    name: "Lava",
+    ticker: "LAVA",
+    color: "0.58 0.2 30",
+    logo: null,
+    stakeUrl: null,
+  },
+];
+
 const whyCards = [
   {
     Icon: Users,
@@ -685,6 +716,83 @@ export default function App() {
                       target="_blank"
                       rel="noopener noreferrer"
                       data-ocid={`networks.item.${i + 1}.primary_button`}
+                    >
+                      <Button
+                        size="sm"
+                        className="w-full bg-primary text-primary-foreground hover:opacity-90 glow-blue font-semibold text-xs tracking-widest"
+                      >
+                        STAKE NOW
+                      </Button>
+                    </a>
+                  </div>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* TESTED NETWORKS */}
+      <section className="py-24 bg-card/30">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="text-center mb-14"
+          >
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-accent/30 bg-accent/10 text-accent-foreground text-xs font-semibold uppercase tracking-widest mb-4">
+              Tested Networks
+            </div>
+            <h2 className="font-heading text-3xl md:text-4xl font-bold">
+              Networks We <span className="text-gradient">Have Tested</span>
+            </h2>
+          </motion.div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {testedNetworks.map((network, i) => (
+              <motion.div
+                key={network.ticker}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.07 }}
+                className="rounded-2xl p-5 bg-card text-center card-glow group cursor-default flex flex-col"
+                data-ocid={`tested_networks.item.${i + 1}`}
+              >
+                <div
+                  className="w-12 h-12 rounded-full mx-auto mb-3 flex items-center justify-center text-sm font-bold overflow-hidden"
+                  style={{
+                    background: `oklch(${network.color} / 0.2)`,
+                    border: `1px solid oklch(${network.color} / 0.4)`,
+                    boxShadow: `0 0 16px oklch(${network.color} / 0.2)`,
+                    color: `oklch(${network.color})`,
+                  }}
+                >
+                  {network.logo ? (
+                    <img
+                      src={network.logo}
+                      alt={network.name}
+                      className="w-full h-full object-contain p-1"
+                    />
+                  ) : (
+                    network.ticker.slice(0, 2)
+                  )}
+                </div>
+                <div className="font-heading font-semibold text-sm">
+                  {network.name}
+                </div>
+                <div className="text-xs text-muted-foreground mt-0.5">
+                  {network.ticker}
+                </div>
+                {network.stakeUrl && (
+                  <div className="mt-3">
+                    <a
+                      href={network.stakeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      data-ocid={`tested_networks.item.${i + 1}.primary_button`}
                     >
                       <Button
                         size="sm"
