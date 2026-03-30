@@ -1,26 +1,26 @@
 # 5 Elements Nodes
 
 ## Current State
-The site has a contact form that stores submissions in the backend via `submitContact`. The backend also exposes `getAllSubmissions` which returns all stored contacts. There is no UI to view these submissions.
+Both "Supported Networks" and "Tested Networks" sections use rectangular cards with `rounded-2xl` styling. Cards contain a logo, network name, ticker (Supported only), and STAKE NOW button (Supported only).
 
 ## Requested Changes (Diff)
 
 ### Add
-- A password-protected `/admin` route that displays all contact form submissions in a table
-- A simple login screen with a password field (hardcoded password: "5elements")
-- Session state: once logged in, stay logged in until page refresh
-- A table showing each submission: name, email, message columns
-- A logout button
+- `aspect-square` to force square dimensions on all network cards in both sections
 
 ### Modify
-- App.tsx: add React Router or hash-based routing for the `/admin` path, or render admin view conditionally based on URL
+- Card container: change `rounded-2xl` to `rounded-full` for both Supported and Tested Networks cards
+- Add `items-center justify-center` to card flex layout so content is centered inside the circle
+- Reduce logo container size slightly (w-12 h-12) and make logo container `rounded-full` to match
+- Reduce internal padding to fit content inside the circular shape
+- Tighten spacing between card elements (smaller mb/gap values)
+- STAKE NOW button: keep but reduce size further (font-size, padding) to fit within the circle
 
 ### Remove
-- Nothing
+- Nothing removed
 
 ## Implementation Plan
-1. Create an AdminPage component with password gate (hardcoded password "5elements")
-2. Fetch all submissions using `getAllSubmissions` from the backend
-3. Display in a clean table with name, email, message columns
-4. Add route: if URL contains `/admin` or `#admin`, show AdminPage instead of main site
-5. Add logout button that clears auth state
+1. In the Supported Networks section: update each `motion.div` card to use `rounded-full aspect-square` and `flex flex-col items-center justify-center`, tighten internal spacing
+2. In the Tested Networks section: same circular treatment
+3. Logo container in both: change to `rounded-full` with slightly smaller dimensions
+4. Validate and build

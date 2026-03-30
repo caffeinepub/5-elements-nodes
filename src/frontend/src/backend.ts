@@ -89,45 +89,51 @@ export class ExternalBlob {
         return this;
     }
 }
-export interface Contact {
+export interface ContactSubmission {
     name: string;
     email: string;
     message: string;
+    timestamp: Time;
 }
+export type Time = bigint;
 export interface backendInterface {
-    getAllSubmissions(): Promise<Array<Contact>>;
-    submitContact(contact: Contact): Promise<void>;
+    getSubmissions(password: string): Promise<Array<ContactSubmission> | null>;
+    submitContact(name: string, email: string, message: string): Promise<void>;
 }
+import type { ContactSubmission as _ContactSubmission } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
-    async getAllSubmissions(): Promise<Array<Contact>> {
+    async getSubmissions(arg0: string): Promise<Array<ContactSubmission> | null> {
         if (this.processError) {
             try {
-                const result = await this.actor.getAllSubmissions();
+                const result = await this.actor.getSubmissions(arg0);
+                return from_candid_opt_n1(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getSubmissions(arg0);
+            return from_candid_opt_n1(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async submitContact(arg0: string, arg1: string, arg2: string): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.submitContact(arg0, arg1, arg2);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getAllSubmissions();
+            const result = await this.actor.submitContact(arg0, arg1, arg2);
             return result;
         }
     }
-    async submitContact(arg0: Contact): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.submitContact(arg0);
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.submitContact(arg0);
-            return result;
-        }
-    }
+}
+function from_candid_opt_n1(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [Array<_ContactSubmission>]): Array<ContactSubmission> | null {
+    return value.length === 0 ? null : value[0];
 }
 export interface CreateActorOptions {
     agent?: Agent;

@@ -8,29 +8,41 @@
 
 import { IDL } from '@icp-sdk/core/candid';
 
-export const Contact = IDL.Record({
+export const Time = IDL.Int;
+export const ContactSubmission = IDL.Record({
   'name' : IDL.Text,
   'email' : IDL.Text,
   'message' : IDL.Text,
+  'timestamp' : Time,
 });
 
 export const idlService = IDL.Service({
-  'getAllSubmissions' : IDL.Func([], [IDL.Vec(Contact)], ['query']),
-  'submitContact' : IDL.Func([Contact], [], []),
+  'getSubmissions' : IDL.Func(
+      [IDL.Text],
+      [IDL.Opt(IDL.Vec(ContactSubmission))],
+      ['query'],
+    ),
+  'submitContact' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [], []),
 });
 
 export const idlInitArgs = [];
 
 export const idlFactory = ({ IDL }) => {
-  const Contact = IDL.Record({
+  const Time = IDL.Int;
+  const ContactSubmission = IDL.Record({
     'name' : IDL.Text,
     'email' : IDL.Text,
     'message' : IDL.Text,
+    'timestamp' : Time,
   });
   
   return IDL.Service({
-    'getAllSubmissions' : IDL.Func([], [IDL.Vec(Contact)], ['query']),
-    'submitContact' : IDL.Func([Contact], [], []),
+    'getSubmissions' : IDL.Func(
+        [IDL.Text],
+        [IDL.Opt(IDL.Vec(ContactSubmission))],
+        ['query'],
+      ),
+    'submitContact' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [], []),
   });
 };
 

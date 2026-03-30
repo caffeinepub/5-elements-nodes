@@ -20,111 +20,111 @@ import { toast } from "sonner";
 import { useSubmitContact } from "./hooks/useQueries";
 import AdminPage from "./pages/AdminPage";
 
-// ─── Node Network SVG Animation ───────────────────────────────────────────────
-function NodeNetwork() {
-  const cx = 200;
-  const cy = 200;
-  const r = 120;
-  const nodes = Array.from({ length: 5 }, (_, i) => {
-    const angle = (i * 2 * Math.PI) / 5 - Math.PI / 2;
-    return {
-      id: `n${i}`,
-      x: cx + r * Math.cos(angle),
-      y: cy + r * Math.sin(angle),
-    };
-  });
+// ─── Animated Canvas Node Network ─────────────────────────────────────────────
+function NodeNetworkCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const lines: [number, number][] = [];
-  for (let i = 0; i < nodes.length; i++) {
-    for (let j = i + 1; j < nodes.length; j++) {
-      lines.push([i, j]);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animFrameId: number;
+    let width = canvas.offsetWidth;
+    let height = canvas.offsetHeight;
+    canvas.width = width;
+    canvas.height = height;
+
+    const PARTICLE_COUNT = 60;
+    const MAX_DIST = 140;
+
+    interface Particle {
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      r: number;
     }
-  }
+
+    const particles: Particle[] = Array.from(
+      { length: PARTICLE_COUNT },
+      () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        r: Math.random() * 2 + 1.5,
+      }),
+    );
+
+    function draw() {
+      if (!ctx || !canvas) return;
+      ctx.clearRect(0, 0, width, height);
+
+      // Update positions
+      for (const p of particles) {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0 || p.x > width) p.vx *= -1;
+        if (p.y < 0 || p.y > height) p.vy *= -1;
+      }
+
+      // Draw connections
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < MAX_DIST) {
+            const alpha = (1 - dist / MAX_DIST) * 0.5;
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(0, 180, 230, ${alpha})`;
+            ctx.lineWidth = 0.8;
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw nodes
+      for (const p of particles) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(0, 200, 255, 0.85)";
+        ctx.shadowBlur = 6;
+        ctx.shadowColor = "rgba(0, 200, 255, 0.6)";
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+
+      animFrameId = requestAnimationFrame(draw);
+    }
+
+    draw();
+
+    const handleResize = () => {
+      if (!canvas) return;
+      width = canvas.offsetWidth;
+      height = canvas.offsetHeight;
+      canvas.width = width;
+      canvas.height = height;
+    };
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      cancelAnimationFrame(animFrameId);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
-    <svg viewBox="0 0 400 400" className="w-full h-full" aria-hidden="true">
-      <defs>
-        <radialGradient id="nodeGrad" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="oklch(0.75 0.14 248)" stopOpacity="1" />
-          <stop
-            offset="100%"
-            stopColor="oklch(0.44 0.17 292)"
-            stopOpacity="0.6"
-          />
-        </radialGradient>
-        <filter id="glow">
-          <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-          <feMerge>
-            <feMergeNode in="coloredBlur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-        <filter id="lineGlow">
-          <feGaussianBlur stdDeviation="1.5" result="coloredBlur" />
-          <feMerge>
-            <feMergeNode in="coloredBlur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-      </defs>
-
-      {lines.map(([i, j], idx) => (
-        <line
-          key={`line-${i}-${j}`}
-          x1={nodes[i].x}
-          y1={nodes[i].y}
-          x2={nodes[j].x}
-          y2={nodes[j].y}
-          stroke="oklch(0.62 0.14 248 / 0.4)"
-          strokeWidth="1"
-          filter="url(#lineGlow)"
-          style={{
-            animation: `flow-line ${2 + idx * 0.3}s ease-in-out infinite`,
-            strokeDasharray: 100,
-          }}
-        />
-      ))}
-
-      <circle
-        cx={cx}
-        cy={cy}
-        r={8}
-        fill="url(#nodeGrad)"
-        filter="url(#glow)"
-        style={{ animation: "pulse-node 2.5s ease-in-out infinite" }}
-      />
-      <circle
-        cx={cx}
-        cy={cy}
-        r={16}
-        fill="oklch(0.62 0.14 248 / 0.1)"
-        style={{ animation: "pulse-node 2.5s ease-in-out infinite 0.3s" }}
-      />
-
-      {nodes.map((node, i) => (
-        <g key={node.id}>
-          <circle
-            cx={node.x}
-            cy={node.y}
-            r={14}
-            fill="oklch(0.62 0.14 248 / 0.08)"
-            style={{
-              animation: `pulse-node ${2 + i * 0.4}s ease-in-out infinite ${i * 0.2}s`,
-            }}
-          />
-          <circle
-            cx={node.x}
-            cy={node.y}
-            r={6}
-            fill="url(#nodeGrad)"
-            filter="url(#glow)"
-            style={{
-              animation: `pulse-node ${2 + i * 0.4}s ease-in-out infinite ${i * 0.2}s`,
-            }}
-          />
-        </g>
-      ))}
-    </svg>
+    <canvas
+      ref={canvasRef}
+      className="w-full h-full"
+      style={{ display: "block" }}
+    />
   );
 }
 
@@ -136,8 +136,10 @@ function DiscordIcon({ size = 16 }: { size?: number }) {
       height={size}
       viewBox="0 0 24 24"
       fill="currentColor"
-      aria-hidden="true"
+      role="img"
+      aria-label="Discord"
     >
+      <title>Discord</title>
       <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.03.054a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />
     </svg>
   );
@@ -151,8 +153,10 @@ function MediumIcon({ size = 16 }: { size?: number }) {
       height={size}
       viewBox="0 0 24 24"
       fill="currentColor"
-      aria-hidden="true"
+      role="img"
+      aria-label="Medium"
     >
+      <title>Medium</title>
       <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z" />
     </svg>
   );
@@ -160,14 +164,6 @@ function MediumIcon({ size = 16 }: { size?: number }) {
 
 // ─── Data ──────────────────────────────────────────────────────────────────────
 const networks = [
-  {
-    name: "Subsquid",
-    ticker: "SQD",
-    color: "0.55 0.18 260",
-    logo: "/assets/uploads/icp-logo.png",
-    stakeUrl:
-      "https://network.sqd.dev/worker/12D3KooWFo3RedLAqMVJqbYM2Xnf19Bu4mW7aDQLPLVTaJp5JH6f/general",
-  },
   {
     name: "Mina",
     ticker: "MINA",
@@ -205,60 +201,49 @@ const networks = [
 const testedNetworks = [
   {
     name: "Aptos",
-    ticker: "APT",
-    color: "0.55 0.14 292",
     logo: "/assets/uploads/Aptos-Network-Symbol-White-RGB-1x-1.png",
-    stakeUrl: null,
+    color: "0.55 0.14 292",
   },
   {
     name: "Celestia",
-    ticker: "TIA",
-    color: "0.55 0.18 250",
     logo: "https://cdn-assets-cloud.frontify.com/s3/frontify-cloud-files-us/eyJwYXRoIjoiZnJvbnRpZnlcL2ZpbGVcL2RKWDkySkVMWXN5YVRqV0RreHBDLnBuZyJ9:frontify:jEpaCs35JOpJyZ3UYwWsoA9qk_VZk-pk5CuZo_Ohczk?width=800&format=webp&quality=100",
-    stakeUrl: null,
+    color: "0.55 0.18 250",
   },
   {
     name: "Aztec",
-    ticker: "AZTEC",
-    color: "0.52 0.16 280",
     logo: "/assets/uploads/aztec-logo.png",
-    stakeUrl: null,
+    color: "0.52 0.16 280",
   },
   {
     name: "Lava",
-    ticker: "LAVA",
-    color: "0.58 0.2 30",
     logo: "https://cdn.prod.website-files.com/642c9c8327126062770bfdd0/66a79d60edc991d9b01088a4_Logo%20symbol%20color.png",
-    stakeUrl: null,
+    color: "0.58 0.2 30",
   },
 ];
 
-const whyCards = [
-  {
-    Icon: Users,
-    title: "Highly Skilled Team",
-    desc: "We are a professional team of developers, systems engineers and social media strategists.",
-    delay: 0,
-    ocid: "why.card",
-  },
+const serviceCards = [
   {
     Icon: Shield,
-    title: "Top Security",
-    desc: "Enterprise-grade security with redundant infrastructure and 24/7 monitoring.",
-    delay: 0.15,
-    ocid: "why.card",
+    title: "Node Validation",
+    desc: "Enterprise-grade PoS node infrastructure with redundant systems, ensuring consistent block production and network participation.",
+    delay: 0,
   },
   {
     Icon: Zap,
-    title: "High Performance",
-    desc: "99.9% uptime SLA with optimized nodes for maximum staking rewards.",
+    title: "24/7 Monitoring",
+    desc: "Round-the-clock infrastructure monitoring with automated alerts and rapid response to maintain 99.9% uptime.",
+    delay: 0.15,
+  },
+  {
+    Icon: Users,
+    title: "Staking Services",
+    desc: "Secure, simple staking solutions for delegators — earn passive rewards while supporting network decentralization.",
     delay: 0.3,
-    ocid: "why.card",
   },
 ];
 
 const stats = [
-  { value: "5+", label: "Networks Supported" },
+  { value: "4+", label: "Networks Supported" },
   { value: "99.9%", label: "Uptime SLA" },
   { value: "24/7", label: "Infrastructure Monitoring" },
   { value: "Italy", label: "Based in" },
@@ -267,7 +252,7 @@ const stats = [
 const socialLinks = [
   {
     label: "GitHub",
-    href: "https://github.com/fiveelementsnodes",
+    href: "https://github.com/5elementsnodes",
     Icon: Github,
   },
   {
@@ -287,6 +272,17 @@ const socialLinks = [
   },
 ];
 
+// ─── Logo Component ────────────────────────────────────────────────────────────
+function FiveElementsLogo({ height = 56 }: { height?: number }) {
+  return (
+    <img
+      src="/assets/uploads/5elements-logo.png"
+      alt="5 Elements Nodes"
+      style={{ height, width: "auto" }}
+    />
+  );
+}
+
 // ─── App ───────────────────────────────────────────────────────────────────────
 export default function App() {
   const [hash, setHash] = useState(() => window.location.hash);
@@ -300,7 +296,7 @@ export default function App() {
 
   const heroRef = useRef<HTMLElement>(null);
   const aboutRef = useRef<HTMLElement>(null);
-  const whyRef = useRef<HTMLElement>(null);
+  const servicesRef = useRef<HTMLElement>(null);
   const networksRef = useRef<HTMLElement>(null);
   const contactRef = useRef<HTMLElement>(null);
 
@@ -336,9 +332,8 @@ export default function App() {
   };
 
   const navLinks = [
-    { label: "Home", ref: heroRef },
     { label: "About", ref: aboutRef },
-    { label: "Why Us", ref: whyRef },
+    { label: "Services", ref: servicesRef },
     { label: "Networks", ref: networksRef },
   ];
 
@@ -355,11 +350,7 @@ export default function App() {
             className="flex items-center"
             data-ocid="nav.link"
           >
-            <img
-              src="https://www.5elementsnodes.com/wp-content/uploads/2023/12/LOGO-1.png"
-              alt="5 Elements Nodes"
-              className="h-14 w-auto object-contain"
-            />
+            <FiveElementsLogo height={56} />
           </button>
 
           <nav
@@ -454,32 +445,31 @@ export default function App() {
               Professional Validation Services
             </div>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-              <span className="text-gradient">Blockchain</span>{" "}
+              <span className="text-gradient">Decentralized</span>{" "}
               <br className="hidden md:block" />
-              Validation <span className="text-foreground">Services</span>
+              Blockchain <span className="text-foreground">Validation</span>
             </h1>
             <p className="text-lg text-muted-foreground leading-relaxed mb-8 max-w-lg">
-              Secure, reliable Proof-of-Stake staking infrastructure. We
-              validate the most promising Web3 networks so you can stake with
-              confidence and earn passively.
+              Professional node operator securing next-generation blockchain
+              networks. Stake with confidence and earn passively.
             </p>
             <div className="flex flex-wrap gap-4">
               <Button
                 size="lg"
-                onClick={() => scrollTo(contactRef)}
+                onClick={() => scrollTo(networksRef)}
                 className="bg-primary text-primary-foreground hover:opacity-90 glow-blue font-semibold px-8"
                 data-ocid="hero.primary_button"
               >
-                Start Staking
+                Our Networks
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                onClick={() => scrollTo(aboutRef)}
+                onClick={() => scrollTo(contactRef)}
                 className="border-border hover:border-primary/60 font-semibold px-8"
                 data-ocid="hero.secondary_button"
               >
-                Learn More
+                Contact Us
               </Button>
             </div>
           </motion.div>
@@ -490,15 +480,15 @@ export default function App() {
             transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
             className="order-1 md:order-2 flex justify-center"
           >
-            <div className="w-72 h-72 md:w-96 md:h-96 relative">
+            <div className="w-full h-72 md:h-96 relative rounded-2xl overflow-hidden">
               <div
-                className="absolute inset-0 rounded-full"
+                className="absolute inset-0 pointer-events-none z-10"
                 style={{
                   background:
-                    "radial-gradient(circle at 50% 50%, oklch(0.62 0.14 248 / 0.12) 0%, transparent 70%)",
+                    "radial-gradient(circle at 50% 50%, oklch(0.62 0.14 248 / 0.05) 0%, transparent 70%)",
                 }}
               />
-              <NodeNetwork />
+              <NodeNetworkCanvas />
             </div>
           </motion.div>
         </div>
@@ -535,9 +525,7 @@ export default function App() {
               About Us
             </div>
             <h2 className="font-heading text-3xl md:text-4xl font-bold mb-6">
-              5 Elements Nodes is a{" "}
-              <span className="text-gradient">PoS Blockchain Validation</span>{" "}
-              Service
+              About <span className="text-gradient">5 Elements Nodes</span>
             </h2>
             <div className="space-y-5 text-muted-foreground text-lg leading-relaxed">
               <p>
@@ -578,8 +566,8 @@ export default function App() {
         </div>
       </section>
 
-      {/* WHY CHOOSE US */}
-      <section ref={whyRef} id="why" className="py-24 bg-card/30">
+      {/* SERVICES */}
+      <section ref={servicesRef} id="services" className="py-24 bg-card/30">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -589,7 +577,7 @@ export default function App() {
             className="text-center mb-14"
           >
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-semibold uppercase tracking-widest mb-4">
-              Why Choose Us
+              Our Services
             </div>
             <h2 className="font-heading text-3xl md:text-4xl font-bold">
               Built for{" "}
@@ -598,7 +586,7 @@ export default function App() {
           </motion.div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {whyCards.map((card) => (
+            {serviceCards.map((card) => (
               <motion.div
                 key={card.title}
                 initial={{ opacity: 0, y: 30 }}
@@ -606,7 +594,7 @@ export default function App() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: card.delay }}
                 className="rounded-2xl p-8 bg-card card-glow flex flex-col gap-5"
-                data-ocid="why.card"
+                data-ocid="services.card"
               >
                 <div
                   className="w-12 h-12 rounded-xl flex items-center justify-center"
@@ -631,7 +619,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* NETWORKS */}
+      {/* SUPPORTED NETWORKS */}
       <section ref={networksRef} id="networks" className="py-24">
         <div className="container mx-auto px-4">
           <motion.div
@@ -649,7 +637,7 @@ export default function App() {
             </h2>
           </motion.div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
             {networks.map((network, i) => (
               <motion.div
                 key={network.ticker}
@@ -657,51 +645,48 @@ export default function App() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.07 }}
-                className="rounded-2xl p-5 bg-card text-center card-glow group cursor-default flex flex-col"
+                className="rounded-full aspect-square p-4 bg-card text-center card-glow group cursor-default flex flex-col items-center justify-center"
                 data-ocid={`networks.item.${i + 1}`}
               >
                 <div
-                  className="w-12 h-12 rounded-full mx-auto mb-3 flex items-center justify-center text-sm font-bold overflow-hidden"
+                  className="w-12 h-12 rounded-full mx-auto mb-2 flex items-center justify-center overflow-hidden flex-shrink-0"
                   style={{
-                    background: `oklch(${network.color} / 0.2)`,
-                    border: `1px solid oklch(${network.color} / 0.4)`,
-                    boxShadow: `0 0 16px oklch(${network.color} / 0.2)`,
-                    color: `oklch(${network.color})`,
+                    background: `oklch(${network.color} / 0.12)`,
+                    border: `1px solid oklch(${network.color} / 0.3)`,
                   }}
                 >
-                  {network.logo ? (
-                    <img
-                      src={network.logo}
-                      alt={network.name}
-                      className="w-full h-full object-contain p-1"
-                    />
-                  ) : (
-                    network.ticker.slice(0, 2)
-                  )}
+                  <img
+                    src={network.logo}
+                    alt={network.name}
+                    className="w-full h-full object-contain p-1"
+                  />
                 </div>
-                <div className="font-heading font-semibold text-sm">
+                <div className="font-heading font-bold text-sm mb-0.5">
                   {network.name}
                 </div>
-                <div className="text-xs text-muted-foreground mt-0.5">
+                <div
+                  className="text-xs font-mono font-semibold px-2 py-0.5 rounded-full mx-auto mb-2 inline-block"
+                  style={{
+                    background: `oklch(${network.color} / 0.15)`,
+                    color: `oklch(${network.color})`,
+                    border: `1px solid oklch(${network.color} / 0.3)`,
+                  }}
+                >
                   {network.ticker}
                 </div>
-                {network.stakeUrl && (
-                  <div className="mt-3">
-                    <a
-                      href={network.stakeUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      data-ocid={`networks.item.${i + 1}.primary_button`}
-                    >
-                      <Button
-                        size="sm"
-                        className="w-full bg-primary text-primary-foreground hover:opacity-90 glow-blue font-semibold text-xs tracking-widest"
-                      >
-                        STAKE NOW
-                      </Button>
-                    </a>
-                  </div>
-                )}
+                <a
+                  href={network.stakeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-ocid={`networks.item.${i + 1}.primary_button`}
+                >
+                  <Button
+                    size="sm"
+                    className="bg-primary text-primary-foreground hover:opacity-90 glow-blue font-semibold text-xs tracking-widest px-3 h-7"
+                  >
+                    STAKE NOW
+                  </Button>
+                </a>
               </motion.div>
             ))}
           </div>
@@ -709,7 +694,7 @@ export default function App() {
       </section>
 
       {/* TESTED NETWORKS */}
-      <section className="py-24 bg-card/30">
+      <section id="tested-networks" className="py-24 bg-card/30">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -726,59 +711,33 @@ export default function App() {
             </h2>
           </motion.div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
             {testedNetworks.map((network, i) => (
               <motion.div
-                key={network.ticker}
+                key={network.name}
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.07 }}
-                className="rounded-2xl p-5 bg-card text-center card-glow group cursor-default flex flex-col"
+                className="rounded-full aspect-square p-4 bg-card text-center card-glow flex flex-col items-center justify-center"
                 data-ocid={`tested_networks.item.${i + 1}`}
               >
                 <div
-                  className="w-12 h-12 rounded-full mx-auto mb-3 flex items-center justify-center text-sm font-bold overflow-hidden"
+                  className="w-12 h-12 rounded-full mb-2 flex items-center justify-center overflow-hidden flex-shrink-0"
                   style={{
-                    background: `oklch(${network.color} / 0.2)`,
-                    border: `1px solid oklch(${network.color} / 0.4)`,
-                    boxShadow: `0 0 16px oklch(${network.color} / 0.2)`,
-                    color: `oklch(${network.color})`,
+                    background: `oklch(${network.color} / 0.12)`,
+                    border: `1px solid oklch(${network.color} / 0.3)`,
                   }}
                 >
-                  {network.logo ? (
-                    <img
-                      src={network.logo}
-                      alt={network.name}
-                      className="w-full h-full object-contain p-1"
-                    />
-                  ) : (
-                    network.ticker.slice(0, 2)
-                  )}
+                  <img
+                    src={network.logo}
+                    alt={network.name}
+                    className="w-full h-full object-contain p-1"
+                  />
                 </div>
-                <div className="font-heading font-semibold text-sm">
+                <div className="font-heading font-bold text-sm">
                   {network.name}
                 </div>
-                <div className="text-xs text-muted-foreground mt-0.5">
-                  {network.ticker}
-                </div>
-                {network.stakeUrl && (
-                  <div className="mt-3">
-                    <a
-                      href={network.stakeUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      data-ocid={`tested_networks.item.${i + 1}.primary_button`}
-                    >
-                      <Button
-                        size="sm"
-                        className="w-full bg-primary text-primary-foreground hover:opacity-90 glow-blue font-semibold text-xs tracking-widest"
-                      >
-                        STAKE NOW
-                      </Button>
-                    </a>
-                  </div>
-                )}
               </motion.div>
             ))}
           </div>
@@ -786,7 +745,7 @@ export default function App() {
       </section>
 
       {/* CONTACT */}
-      <section ref={contactRef} id="contact" className="py-24 bg-card/30">
+      <section ref={contactRef} id="contact" className="py-24">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -799,7 +758,7 @@ export default function App() {
               Get in Touch
             </div>
             <h2 className="font-heading text-3xl md:text-4xl font-bold">
-              Ready to <span className="text-gradient">Start Staking?</span>
+              <span className="text-gradient">Get In Touch</span>
             </h2>
             <p className="mt-4 text-muted-foreground max-w-md mx-auto">
               Reach out and our team will get back to you within 24 hours.
@@ -928,11 +887,9 @@ export default function App() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8 mb-10">
             <div>
-              <img
-                src="https://www.5elementsnodes.com/wp-content/uploads/2023/12/LOGO-1.png"
-                alt="5 Elements Nodes"
-                className="h-14 w-auto object-contain mb-3"
-              />
+              <div className="mb-3">
+                <FiveElementsLogo height={56} />
+              </div>
               <p className="text-sm text-muted-foreground max-w-xs">
                 Professional PoS blockchain validation services based in Italy.
               </p>
