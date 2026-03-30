@@ -169,60 +169,36 @@ const networks = [
       "https://network.sqd.dev/worker/12D3KooWFo3RedLAqMVJqbYM2Xnf19Bu4mW7aDQLPLVTaJp5JH6f/general",
   },
   {
-    name: "Aptos",
-    ticker: "APT",
-    color: "0.55 0.14 292",
-    logo: "/assets/uploads/Aptos-Network-Symbol-White-RGB-1x-1.png",
-    stakeUrl: null,
+    name: "Mina",
+    ticker: "MINA",
+    color: "0.55 0.18 210",
+    logo: null,
+    stakeUrl:
+      "https://minascan.io/mainnet/validator/B62qkCBzfCu5ma93fapuvEP1kB8io2i88zijQftn5YrBzSqWHJjtiX4/delegations",
   },
   {
-    name: "Osmosis",
-    ticker: "OSMO",
-    color: "0.52 0.2 310",
+    name: "Acurast",
+    ticker: "ACU",
+    color: "0.52 0.2 170",
     logo: null,
-    stakeUrl: null,
+    stakeUrl:
+      "https://telemetry.polkadot.io/#list/0xce7681fb12aa8f7265d229a9074be0ea1d5e99b53eedcec2deade43857901808",
   },
   {
-    name: "Persistence",
-    ticker: "XPRT",
-    color: "0.58 0.16 248",
+    name: "Avail",
+    ticker: "AVAIL",
+    color: "0.58 0.2 280",
     logo: null,
-    stakeUrl: null,
+    stakeUrl:
+      "https://explorer.avail.so/?rpc=wss%3A%2F%2Fmainnet-rpc.avail.so%2Fws#/staking/query/5ENgWrsYiSKMDepgxMjjtbtg5eTQNj59VAd9y5mzyMLE42Wq",
   },
   {
-    name: "Juno",
-    ticker: "JUNO",
-    color: "0.5 0.15 270",
+    name: "ZkVerify",
+    ticker: "VFY",
+    color: "0.54 0.16 140",
     logo: null,
-    stakeUrl: null,
-  },
-  {
-    name: "Axelar",
-    ticker: "AXL",
-    color: "0.53 0.13 230",
-    logo: null,
-    stakeUrl: null,
-  },
-  {
-    name: "Agoric",
-    ticker: "BLD",
-    color: "0.57 0.17 200",
-    logo: null,
-    stakeUrl: null,
-  },
-  {
-    name: "Stargaze",
-    ticker: "STARS",
-    color: "0.54 0.19 320",
-    logo: null,
-    stakeUrl: null,
-  },
-  {
-    name: "Polkadot",
-    ticker: "DOT",
-    color: "0.54 0.2 330",
-    logo: null,
-    stakeUrl: null,
+    stakeUrl:
+      "https://telemetry.polkadot.io/#list/0x4b5f95eefedf0d0fb514339edc24d2d411310520f687b4146145bcedb99885b9",
   },
 ];
 
@@ -238,21 +214,21 @@ const testedNetworks = [
     name: "Celestia",
     ticker: "TIA",
     color: "0.55 0.18 250",
-    logo: null,
+    logo: "https://cdn-assets-cloud.frontify.com/s3/frontify-cloud-files-us/eyJwYXRoIjoiZnJvbnRpZnlcL2ZpbGVcL2RKWDkySkVMWXN5YVRqV0RreHBDLnBuZyJ9:frontify:jEpaCs35JOpJyZ3UYwWsoA9qk_VZk-pk5CuZo_Ohczk?width=800&format=webp&quality=100",
     stakeUrl: null,
   },
   {
     name: "Aztec",
     ticker: "AZTEC",
     color: "0.52 0.16 280",
-    logo: null,
+    logo: "/assets/uploads/aztec-logo.png",
     stakeUrl: null,
   },
   {
     name: "Lava",
     ticker: "LAVA",
     color: "0.58 0.2 30",
-    logo: null,
+    logo: "https://cdn.prod.website-files.com/642c9c8327126062770bfdd0/66a79d60edc991d9b01088a4_Logo%20symbol%20color.png",
     stakeUrl: null,
   },
 ];
@@ -282,7 +258,7 @@ const whyCards = [
 ];
 
 const stats = [
-  { value: "9+", label: "Networks Supported" },
+  { value: "5+", label: "Networks Supported" },
   { value: "99.9%", label: "Uptime SLA" },
   { value: "24/7", label: "Infrastructure Monitoring" },
   { value: "Italy", label: "Based in" },
