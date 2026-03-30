@@ -172,7 +172,7 @@ const networks = [
     name: "Mina",
     ticker: "MINA",
     color: "0.55 0.18 210",
-    logo: null,
+    logo: "https://static.vecteezy.com/system/resources/previews/014/295/628/non_2x/mina-protocol-token-mina-icon-isolated-on-white-background-vector.jpg",
     stakeUrl:
       "https://minascan.io/mainnet/validator/B62qkCBzfCu5ma93fapuvEP1kB8io2i88zijQftn5YrBzSqWHJjtiX4/delegations",
   },
@@ -180,7 +180,7 @@ const networks = [
     name: "Acurast",
     ticker: "ACU",
     color: "0.52 0.2 170",
-    logo: null,
+    logo: "/assets/uploads/acurast-logo.png",
     stakeUrl:
       "https://telemetry.polkadot.io/#list/0xce7681fb12aa8f7265d229a9074be0ea1d5e99b53eedcec2deade43857901808",
   },
@@ -188,7 +188,7 @@ const networks = [
     name: "Avail",
     ticker: "AVAIL",
     color: "0.58 0.2 280",
-    logo: null,
+    logo: "/assets/avail_logo_square_-_blue-019d400b-68a5-77da-8f58-12264ad51bec.svg",
     stakeUrl:
       "https://explorer.avail.so/?rpc=wss%3A%2F%2Fmainnet-rpc.avail.so%2Fws#/staking/query/5ENgWrsYiSKMDepgxMjjtbtg5eTQNj59VAd9y5mzyMLE42Wq",
   },
@@ -196,7 +196,7 @@ const networks = [
     name: "ZkVerify",
     ticker: "VFY",
     color: "0.54 0.16 140",
-    logo: null,
+    logo: "https://avatars.githubusercontent.com/u/166552449?s=200&v=4",
     stakeUrl:
       "https://telemetry.polkadot.io/#list/0x4b5f95eefedf0d0fb514339edc24d2d411310520f687b4146145bcedb99885b9",
   },
