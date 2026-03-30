@@ -645,11 +645,11 @@ export default function App() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.07 }}
-                className="rounded-full aspect-square p-4 bg-card text-center card-glow group cursor-default flex flex-col items-center justify-center"
+                className="rounded-2xl p-6 bg-card text-center card-glow flex flex-col items-center gap-3"
                 data-ocid={`networks.item.${i + 1}`}
               >
                 <div
-                  className="w-12 h-12 rounded-full mx-auto mb-2 flex items-center justify-center overflow-hidden flex-shrink-0"
+                  className="w-16 h-16 rounded-xl flex items-center justify-center overflow-hidden flex-shrink-0"
                   style={{
                     background: `oklch(${network.color} / 0.12)`,
                     border: `1px solid oklch(${network.color} / 0.3)`,
@@ -661,11 +661,11 @@ export default function App() {
                     className="w-full h-full object-contain p-1"
                   />
                 </div>
-                <div className="font-heading font-bold text-sm mb-0.5">
+                <div className="font-heading font-bold text-base">
                   {network.name}
                 </div>
                 <div
-                  className="text-xs font-mono font-semibold px-2 py-0.5 rounded-full mx-auto mb-2 inline-block"
+                  className="text-xs font-mono font-semibold px-2 py-0.5 rounded-full inline-block"
                   style={{
                     background: `oklch(${network.color} / 0.15)`,
                     color: `oklch(${network.color})`,
@@ -682,7 +682,7 @@ export default function App() {
                 >
                   <Button
                     size="sm"
-                    className="bg-primary text-primary-foreground hover:opacity-90 glow-blue font-semibold text-xs tracking-widest px-3 h-7"
+                    className="bg-primary text-primary-foreground hover:opacity-90 glow-blue font-semibold text-xs tracking-widest px-4"
                   >
                     STAKE NOW
                   </Button>
@@ -719,11 +719,11 @@ export default function App() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.07 }}
-                className="rounded-full aspect-square p-4 bg-card text-center card-glow flex flex-col items-center justify-center"
+                className="rounded-2xl p-6 bg-card text-center card-glow flex flex-col items-center gap-3"
                 data-ocid={`tested_networks.item.${i + 1}`}
               >
                 <div
-                  className="w-12 h-12 rounded-full mb-2 flex items-center justify-center overflow-hidden flex-shrink-0"
+                  className="w-16 h-16 rounded-xl flex items-center justify-center overflow-hidden flex-shrink-0"
                   style={{
                     background: `oklch(${network.color} / 0.12)`,
                     border: `1px solid oklch(${network.color} / 0.3)`,
@@ -735,7 +735,7 @@ export default function App() {
                     className="w-full h-full object-contain p-1"
                   />
                 </div>
-                <div className="font-heading font-bold text-sm">
+                <div className="font-heading font-bold text-base">
                   {network.name}
                 </div>
               </motion.div>
